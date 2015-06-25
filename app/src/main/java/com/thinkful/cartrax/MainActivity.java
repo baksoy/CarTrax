@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thinkful.cartrax.services.impl.VehicleServiceImpl;
 import com.thinkful.contract.dto.VehicleDto;
+import com.thinkful.contract.dto.VehicleMakeDto;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,56 +30,21 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         VehicleDto dto = new VehicleDto();
 
-        new AsyncTask<Void,Void,String>() {
+        new AsyncTask<Void,Void,VehicleMakeDto>() {
             @Override
-            protected String doInBackground(Void... params) {
-
-                HttpURLConnection urlConnection = null;
-                BufferedReader bufferedReader = null;
-                StringBuilder json = new StringBuilder();
-
-                try {
-//                    URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?lat=45&lon=23&mode=json&units=metric&cnt=1");
-                    URL url = new URL("http://10.0.2.2:8080/vehicles");
-                    urlConnection = (HttpURLConnection) url.openConnection();
-
-                    bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        json.append(line + "\n");
-                    }
-
-                    return json.toString();
-
-                } catch (IOException e) {
-                    Log.e("MainActivity", "Error ", e);
-
-                } finally {
-                    if (bufferedReader != null) {
-                        try {
-                            bufferedReader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
-                    }
-                }
-
-                return null;
+            protected VehicleMakeDto doInBackground(Void... params) {
+                return VehicleServiceImpl.getInstance().createVehicleMake("toyota");
             }
 
             @Override
-            protected void onPostExecute(String json) {
-                try {
-                    List<VehicleDto> vehicleDtos = new ObjectMapper().readValue(json, new TypeReference<List<VehicleDto>>() {});
-                    Log.i("","Successful.");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                super.onPostExecute(json);
+            protected void onPostExecute(VehicleMakeDto json) {
+                Toast.makeText(MainActivity.this,"Vehicle Make Created: " + json.toString(),Toast.LENGTH_LONG).show();
+//                try {
+//                    List<VehicleDto> vehicleDtos = new ObjectMapper().readValue(json, new TypeReference<List<VehicleDto>>() {});
+//                    Log.i("","Successful.");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             }
         }.execute();
     }
