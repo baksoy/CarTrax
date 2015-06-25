@@ -30,10 +30,15 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         VehicleDto dto = new VehicleDto();
 
+//        createMake("Toyota");
+        loadVehicleMakes();
+    }
+
+    private void createMake(final String make) {
         new AsyncTask<Void,Void,VehicleMakeDto>() {
             @Override
             protected VehicleMakeDto doInBackground(Void... params) {
-                return VehicleServiceImpl.getInstance().createVehicleMake("toyota");
+                return VehicleServiceImpl.getInstance().createVehicleMake(make);
             }
 
             @Override
@@ -45,6 +50,20 @@ public class MainActivity extends ActionBarActivity {
 //                } catch (IOException e) {
 //                    e.printStackTrace();
 //                }
+            }
+        }.execute();
+    }
+
+    private void loadVehicleMakes() {
+        new AsyncTask<Void,Void,List<VehicleMakeDto>>() {
+            @Override
+            protected List<VehicleMakeDto> doInBackground(Void... params) {
+                return VehicleServiceImpl.getInstance().getVehicleMakes();
+            }
+
+            @Override
+            protected void onPostExecute(List<VehicleMakeDto> data) {
+                Toast.makeText(MainActivity.this,"Vehicle Makes Loaded: " + data.size() + "; " + data.toString(),Toast.LENGTH_LONG).show();
             }
         }.execute();
     }

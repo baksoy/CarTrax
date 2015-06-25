@@ -96,9 +96,9 @@
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.5.4" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.7" level="project" />
     <orderEntry type="library" exported="" name="spring-android-core-1.0.1.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="jackson-core-2.5.4" level="project" />
     <orderEntry type="library" exported="" name="jackson-datatype-joda-2.5.4" level="project" />
     <orderEntry type="module" module-name="contract" exported="" />
   </component>

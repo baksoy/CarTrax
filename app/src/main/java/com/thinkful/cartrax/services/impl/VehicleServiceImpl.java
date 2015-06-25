@@ -1,12 +1,13 @@
 package com.thinkful.cartrax.services.impl;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.thinkful.cartrax.services.CartraxContract;
 import com.thinkful.cartrax.services.VehicleService;
 import com.thinkful.contract.dto.VehicleMakeDto;
-import com.thinkful.contract.dto.VehicleModelDto;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +32,7 @@ public class VehicleServiceImpl implements VehicleService {
     private static final VehicleService INSTANCE = new VehicleServiceImpl();
 
     private RestTemplate restTemplate;
+    private ObjectMapper objectMapper;
 
     private VehicleServiceImpl() {
         restTemplate = new RestTemplate();
@@ -59,14 +64,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleMakeDto> getVehicleMakes() {
-//        ResponseEntity<List<VehicleMakeDto>> response = restTemplate.exchange(
-//                CartraxContract.ENDPOINT + "/vehicle-makes",
-//                HttpMethod.GET,
-//                null,
-//                new ParameterizedTypeReference<List<VehicleMakeDto>>() {}, Collections.emptyMap());
-//
-//        return response.getBody();
-        return null;
+        ResponseEntity<VehicleMakeDto[]> response = restTemplate.exchange(
+                CartraxContract.ENDPOINT + "/vehicle-makes",
+                HttpMethod.GET,
+                null,
+                VehicleMakeDto[].class);
+
+        return Arrays.asList(response.getBody());
     }
 
     private HttpMessageConverter jacksonMessageConverter()
@@ -83,8 +87,10 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     private ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new CartraxObjectMapper();
-        objectMapper.registerModule(new JodaModule());
+        if (objectMapper == null) {
+            objectMapper = new CartraxObjectMapper();
+            objectMapper.registerModule(new JodaModule());
+        }
         return objectMapper;
     }
 }
